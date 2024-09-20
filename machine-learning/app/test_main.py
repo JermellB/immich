@@ -2,7 +2,6 @@ import json
 import os
 from io import BytesIO
 from pathlib import Path
-from random import randint
 from types import SimpleNamespace
 from typing import Any, Callable
 from unittest import mock
@@ -29,6 +28,7 @@ from .config import Settings, settings
 from .models.base import InferenceModel
 from .models.cache import ModelCache
 from .schemas import ModelFormat, ModelTask, ModelType
+import secrets
 
 
 class TestBase:
@@ -374,7 +374,7 @@ class TestCLIP:
         mocker.patch.object(OpenClipTextualEncoder, "tokenizer_cfg", clip_tokenizer_cfg)
         mocker.patch.object(InferenceModel, "_make_session", autospec=True).return_value
         mock_tokenizer = mocker.patch("app.models.clip.textual.Tokenizer.from_file", autospec=True).return_value
-        mock_ids = [randint(0, 50000) for _ in range(77)]
+        mock_ids = [secrets.SystemRandom().randint(0, 50000) for _ in range(77)]
         mock_tokenizer.encode.return_value = SimpleNamespace(ids=mock_ids)
 
         clip_encoder = OpenClipTextualEncoder("ViT-B-32__openai", cache_dir="test_cache")
@@ -398,8 +398,8 @@ class TestCLIP:
         mocker.patch.object(MClipTextualEncoder, "tokenizer_cfg", clip_tokenizer_cfg)
         mocker.patch.object(InferenceModel, "_make_session", autospec=True).return_value
         mock_tokenizer = mocker.patch("app.models.clip.textual.Tokenizer.from_file", autospec=True).return_value
-        mock_ids = [randint(0, 50000) for _ in range(77)]
-        mock_attention_mask = [randint(0, 1) for _ in range(77)]
+        mock_ids = [secrets.SystemRandom().randint(0, 50000) for _ in range(77)]
+        mock_attention_mask = [secrets.SystemRandom().randint(0, 1) for _ in range(77)]
         mock_tokenizer.encode.return_value = SimpleNamespace(ids=mock_ids, attention_mask=mock_attention_mask)
 
         clip_encoder = MClipTextualEncoder("ViT-B-32__openai", cache_dir="test_cache")
